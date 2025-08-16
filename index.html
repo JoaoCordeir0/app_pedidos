@@ -11,7 +11,7 @@
 <body class="bg-gray-100 min-h-screen flex flex-col items-center">
 
     <!-- Header -->
-    <header class="w-full max-w-sm bg-gray-300 flex items-center justify-between px-4 py-3 border-none shadow-lg">
+    <header class="w-full max-w-xl bg-gray-300 flex items-center justify-between px-4 py-3 border-none shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">📝 Anotação de Pedido</h1>
         <button id="configBtn" class="px-4 py-2 bg-gray-800 text-white rounded-lg">⚙️</button>
     </header>
@@ -41,15 +41,15 @@
         <div class="bg-white rounded-2xl shadow-lg p-6 w-80">
             <h2 class="text-xl font-bold mb-4">Selecione a quantidade</h2>
             <div class="grid grid-cols-3 gap-2 mb-4">
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">1x</button>
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">2x</button>
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">3x</button>
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">4x</button>
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">5x</button>
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">6x</button>
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">7x</button>
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">8x</button>
-                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">9x</button>
+                <button class="quantity-btn px-4 py-2 bg-green-500 text-white rounded-lg">1x</button>
+                <button class="quantity-btn px-4 py-2 bg-green-500 text-white rounded-lg">2x</button>
+                <button class="quantity-btn px-4 py-2 bg-green-500 text-white rounded-lg">3x</button>
+                <button class="quantity-btn px-4 py-2 bg-yellow-500 text-white rounded-lg">4x</button>
+                <button class="quantity-btn px-4 py-2 bg-yellow-500 text-white rounded-lg">5x</button>
+                <button class="quantity-btn px-4 py-2 bg-yellow-500 text-white rounded-lg">6x</button>
+                <button class="quantity-btn px-4 py-2 bg-orange-500 text-white rounded-lg">7x</button>
+                <button class="quantity-btn px-4 py-2 bg-orange-500 text-white rounded-lg">8x</button>
+                <button class="quantity-btn px-4 py-2 bg-orange-500 text-white rounded-lg">9x</button>
             </div>
             <button id="closeQuantityBtn"
                 class="px-4 py-2 bg-gray-400 text-white rounded-lg w-full">Cancelar</button>
@@ -110,6 +110,7 @@
             let total = 0;
             orders.forEach((order, index) => {
                 const tr = document.createElement("tr");
+                tr.classList.add("border-b");
                 tr.innerHTML = `
                 <td class="py-1">${order.qty}x</td>
                 <td class="py-1">${order.name}</td>
