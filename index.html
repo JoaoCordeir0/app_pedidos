@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anotação de Pedido</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col items-center">
+
+    <!-- Header -->
+    <header class="w-full max-w-sm bg-gray-300 flex items-center justify-between px-4 py-3 border-none shadow-lg">
+        <h1 class="text-2xl font-bold text-gray-800">📝 Anotação de Pedido</h1>
+        <button id="configBtn" class="px-4 py-2 bg-gray-800 text-white rounded-lg">⚙️</button>
+    </header>
+
+    <!-- Modal de Configuração -->
+    <div id="configModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-2xl shadow-lg p-6 w-80">
+            <h2 class="text-xl font-bold mb-4">Adicionar Item</h2>
+            <input id="itemName" type="text" placeholder="Nome do item" class="w-full p-2 border rounded mb-2" />
+            <input id="itemPrice" type="number" placeholder="Preço (R$)" step="0.01"
+                class="w-full p-2 border rounded mb-4" />
+            <div class="flex justify-between mb-2">
+                <button id="addItemBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Adicionar</button>
+                <button id="clearItemsBtn" class="px-4 py-2 bg-red-500 text-white rounded-lg">Limpar todos</button>
+            </div>
+            <div class="flex justify-end">
+                <button id="closeConfigBtn" class="px-4 py-2 bg-gray-400 text-white rounded-lg">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Itens -->
+    <div id="itemsList" class="grid grid-cols-2 gap-2 w-full max-w-sm mb-2 mt-4 p-2"></div>
+
+    <!-- Modal de Quantidade -->
+    <div id="quantityModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-2xl shadow-lg p-6 w-80">
+            <h2 class="text-xl font-bold mb-4">Selecione a quantidade</h2>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">1x</button>
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">2x</button>
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">3x</button>
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">4x</button>
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">5x</button>
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">6x</button>
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">7x</button>
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">8x</button>
+                <button class="quantity-btn px-4 py-2 bg-blue-500 text-white rounded-lg">9x</button>
+            </div>
+            <button id="closeQuantityBtn"
+                class="px-4 py-2 bg-gray-400 text-white rounded-lg w-full">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Lista de Pedidos -->
+    <div class="p-1 w-full">
+        <div id="orderList" class="bg-white p-4 rounded-xl shadow mb-4 mx-2">
+            <h2 class="text-lg font-bold mb-2">📃 Pedido</h2>
+            <table class="w-full text-left border-collapse mb-4">
+                <thead>
+                    <tr class="border-b">
+                        <th class="py-1">Qtd</th>
+                        <th class="py-1">Item</th>
+                        <th class="py-1">Subtotal</th>
+                        <th class="py-1"></th>
+                    </tr>
+                </thead>
+                <tbody id="orderItems"></tbody>
+            </table>
+            <p class="mt-2 font-semibold text-lg">Total: R$ <span id="totalAmount">0.00</span></p>
+        </div>
+    </div>
+
+    <!-- Botão Limpar -->
+    <button id="clearBtn" class="px-4 py-2 bg-green-500 text-white rounded-lg">✅ Concluir Pedido</button>
+
+    <script>
+        const itemsList = document.getElementById("itemsList");
+        const orderItems = document.getElementById("orderItems");
+        const totalAmount = document.getElementById("totalAmount");
+        const quantityModal = document.getElementById("quantityModal");
+        const configModal = document.getElementById("configModal");
+
+        let currentItem = null;
+        let orders = [];
+        let items = JSON.parse(localStorage.getItem("items")) || [];
+
+        // Renderizar itens
+        function renderItems() {
+            itemsList.innerHTML = "";
+            items.forEach(item => {
+                const btn = document.createElement("button");
+                btn.className = "px-4 py-3 bg-blue-500 text-white rounded-lg text-lg font-medium";
+                btn.textContent = `${item.name} (R$ ${item.price.toFixed(2)})`;
+                btn.onclick = () => {
+                    currentItem = item;
+                    quantityModal.classList.remove("hidden");
+                };
+                itemsList.appendChild(btn);
+            });
+        }
+
+        // Renderizar pedidos
+        function renderOrders() {
+            orderItems.innerHTML = "";
+            let total = 0;
+            orders.forEach((order, index) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                <td class="py-1">${order.qty}x</td>
+                <td class="py-1">${order.name}</td>
+                <td class="py-1">R$ ${(order.qty * order.price).toFixed(2)}</td>
+                <td class="py-1 text-right">
+                    <button class="text-red-500 font-bold" onclick="removeOrder(${index})">❌</button>
+                </td>
+                `;
+                orderItems.appendChild(tr);
+                total += order.qty * order.price;
+            });
+            totalAmount.textContent = total.toFixed(2);
+        }
+
+        // Remover item do pedido
+        function removeOrder(index) {
+            orders.splice(index, 1);
+            renderOrders();
+        }
+        window.removeOrder = removeOrder; // expor para funcionar no onclick
+
+        // Eventos de quantidade
+        document.querySelectorAll(".quantity-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const qty = parseInt(btn.textContent);
+                orders.push({ ...currentItem, qty });
+                renderOrders();
+                quantityModal.classList.add("hidden");
+            });
+        });
+
+        // Evento para limpar itens
+        document.getElementById("clearItemsBtn").addEventListener("click", () => {
+            localStorage.removeItem("items");
+            console.log('eu')
+            itens = [];
+            itemsList.innerHTML = "";
+        });
+
+        document.getElementById("closeQuantityBtn").onclick = () => {
+            quantityModal.classList.add("hidden");
+        };
+
+        // Eventos de configuração
+        document.getElementById("configBtn").onclick = () => configModal.classList.remove("hidden");
+        document.getElementById("closeConfigBtn").onclick = () => configModal.classList.add("hidden");
+
+        document.getElementById("addItemBtn").onclick = () => {
+            const name = document.getElementById("itemName").value.trim();
+            const price = parseFloat(document.getElementById("itemPrice").value);
+            if (name && !isNaN(price)) {
+                items.push({ name, price });
+                localStorage.setItem("items", JSON.stringify(items));
+                renderItems();
+                document.getElementById("itemName").value = "";
+                document.getElementById("itemPrice").value = "";
+            }
+        };
+
+        // Limpar pedidos
+        document.getElementById("clearBtn").onclick = () => {
+            orders = [];
+            renderOrders();
+        };
+
+        // Inicializa
+        renderItems();
+        renderOrders();
+    </script>
+</body>
+
+</html>
