@@ -17,19 +17,19 @@
     </header>
 
     <!-- Modal de Configuração -->
-    <div id="configModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div id="configModal" class="hidden fixed inset-0 flex justify-center bg-black bg-opacity-50 items-start pt-12">
         <div class="bg-white rounded-2xl shadow-lg p-6 w-80">
-            <h2 class="text-xl font-bold mb-4">Adicionar Item</h2>
+            <h2 class="text-xl font-bold mb-2">Adicionar Item</h2>
             <input id="itemName" type="text" placeholder="Nome do item" class="w-full p-2 border rounded mb-2" />
             <input id="itemPrice" type="number" placeholder="Preço (R$)" step="0.01"
                 class="w-full p-2 border rounded mb-4" />
             <div class="flex justify-between mb-2">
-                <button id="addItemBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Adicionar</button>
-                <button id="clearItemsBtn" class="px-4 py-2 bg-red-500 text-white rounded-lg">Limpar todos</button>
+                <button id="addItemBtn" class="px-4 py-2 bg-blue-500 text-white font-medium rounded-lg">➕ Adicionar</button>
+                <button id="closeConfigBtn" class="px-4 py-2 bg-gray-400 text-white font-medium rounded-lg">❌ Fechar</button>
             </div>
-            <div class="flex justify-end">
-                <button id="closeConfigBtn" class="px-4 py-2 bg-gray-400 text-white rounded-lg">Fechar</button>
-            </div>
+
+            <h2 class="text-xl font-bold mb-2 mt-5">Limpar items</h2>
+            <button id="clearItemsBtn" class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg">🗑️ Limpar todos</button>
         </div>
     </div>
 
