@@ -145,8 +145,7 @@
         // Evento para limpar itens
         document.getElementById("clearItemsBtn").addEventListener("click", () => {
             localStorage.removeItem("items");
-            console.log('eu')
-            itens = [];
+            items = [];
             itemsList.innerHTML = "";
         });
 
